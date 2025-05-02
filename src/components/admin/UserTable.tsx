@@ -40,7 +40,7 @@ const UserTable = () => {
 
   const handleAddUser = () => {
     addUser(newUser);
-    setNewUser({ email: "", name: "", role: "user" as const });
+    setNewUser({ email: "", name: "", role: "user" as "admin" | "user" });
     setIsAddDialogOpen(false);
   };
 
