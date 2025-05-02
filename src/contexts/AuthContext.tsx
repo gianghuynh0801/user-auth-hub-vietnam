@@ -42,7 +42,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Map profiles to AppUser type
       if (data) {
-        const formattedUsers: AppUser[] = data.map((profile: ProfileData) => ({
+        const formattedUsers: AppUser[] = data.map((profile: any) => ({
           id: profile.id,
           email: profile.email,
           name: profile.name || "",
