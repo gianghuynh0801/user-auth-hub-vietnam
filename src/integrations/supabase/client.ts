@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from './types';
 import type { CustomDatabase } from '@/types/supabase';
 
-const SUPABASE_URL = "https://eknujhmrispkgzhrywfv.supabase.co";
+const SUPABASE_URL = "https://api.supabase.mbtool.online";
 const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrbnVqaG1yaXNwa2d6aHJ5d2Z2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU4MjIzNTQsImV4cCI6MjA2MTM5ODM1NH0.aQWyd4sla7_lls6ALGjXciTa0JnieySmWYJNTHM0ZEQ";
 
 // Import the supabase client like this:
