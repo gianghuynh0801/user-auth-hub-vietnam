@@ -2,35 +2,27 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { Session, User } from "@supabase/supabase-js";
-
-// User type definition
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: "admin" | "user";
-  createdAt: string;
-}
+import { Session } from "@supabase/supabase-js";
+import { AppUser, NewUser, UpdateUser } from "@/types";
 
 interface AuthContextType {
-  currentUser: User | null;
-  users: User[];
+  currentUser: AppUser | null;
+  users: AppUser[];
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
   register: (email: string, name: string, password: string) => Promise<boolean>;
   logout: () => void;
-  addUser: (user: Omit<User, "id" | "createdAt">) => void;
-  updateUser: (id: string, userData: Partial<User>) => void;
+  addUser: (user: NewUser) => void;
+  updateUser: (id: string, userData: UpdateUser) => void;
   deleteUser: (id: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [users, setUsers] = useState<User[]>([]);
+  const [currentUser, setCurrentUser] = useState<AppUser | null>(null);
+  const [users, setUsers] = useState<AppUser[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [session, setSession] = useState<Session | null>(null);
   const { toast } = useToast();
@@ -38,26 +30,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Fetch all users (only for admin)
   const fetchUsers = async () => {
     try {
-      const { data: profiles, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .order("created_at", { ascending: false });
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false });
 
       if (error) {
         console.error("Error fetching users:", error);
         return;
       }
 
-      // Map profiles to User type
-      const formattedUsers: User[] = profiles.map((profile) => ({
-        id: profile.id,
-        email: profile.email,
-        name: profile.name,
-        role: profile.role as "admin" | "user",
-        createdAt: profile.created_at,
-      }));
-
-      setUsers(formattedUsers);
+      // Map profiles to AppUser type
+      if (data) {
+        const formattedUsers: AppUser[] = data.map((profile) => ({
+          id: profile.id,
+          email: profile.email,
+          name: profile.name,
+          role: profile.role as "admin" | "user",
+          createdAt: profile.created_at,
+        }));
+        
+        setUsers(formattedUsers);
+      }
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -84,19 +78,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               return;
             }
 
-            const user: User = {
-              id: profile.id,
-              email: profile.email,
-              name: profile.name,
-              role: profile.role,
-              createdAt: profile.created_at,
-            };
-            
-            setCurrentUser(user);
-            
-            // If user is admin, fetch all users
-            if (user.role === "admin") {
-              fetchUsers();
+            if (profile) {
+              const user: AppUser = {
+                id: profile.id,
+                email: profile.email,
+                name: profile.name,
+                role: profile.role,
+                createdAt: profile.created_at,
+              };
+              
+              setCurrentUser(user);
+              
+              // If user is admin, fetch all users
+              if (user.role === "admin") {
+                fetchUsers();
+              }
             }
           }, 0);
         } else {
@@ -123,19 +119,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               return;
             }
 
-            const user: User = {
-              id: profile.id,
-              email: profile.email,
-              name: profile.name,
-              role: profile.role,
-              createdAt: profile.created_at,
-            };
-            
-            setCurrentUser(user);
-            
-            // If user is admin, fetch all users
-            if (user.role === "admin") {
-              fetchUsers();
+            if (profile) {
+              const user: AppUser = {
+                id: profile.id,
+                email: profile.email,
+                name: profile.name,
+                role: profile.role,
+                createdAt: profile.created_at,
+              };
+              
+              setCurrentUser(user);
+              
+              // If user is admin, fetch all users
+              if (user.role === "admin") {
+                fetchUsers();
+              }
             }
             
             setIsLoading(false);
@@ -251,7 +249,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const addUser = async (userData: Omit<User, "id" | "createdAt">) => {
+  const addUser = async (userData: NewUser) => {
     setIsLoading(true);
     
     try {
@@ -280,7 +278,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       // Update the user's role in the profiles table if needed
-      if (userData.role === "admin") {
+      if (userData.role === "admin" && authData.user) {
         const { error: updateError } = await supabase
           .from("profiles")
           .update({ role: "admin" })
@@ -311,7 +309,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const updateUser = async (id: string, userData: Partial<User>) => {
+  const updateUser = async (id: string, userData: UpdateUser) => {
     setIsLoading(true);
     
     try {
@@ -427,3 +425,6 @@ export const useAuth = (): AuthContextType => {
   }
   return context;
 };
+
+// Export types
+export type { AppUser, NewUser, UpdateUser } from "@/types";

@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { UserIcon } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useToast } from "@/components/ui/use-toast";
+import { UpdateUser } from "@/types";
 
 const Profile = () => {
   const { currentUser, updateUser } = useAuth();
@@ -32,11 +33,12 @@ const Profile = () => {
     e.preventDefault();
     if (!currentUser) return;
     
-    updateUser(currentUser.id, {
+    const userData: UpdateUser = {
       name: formData.name,
       email: formData.email,
-    });
+    };
     
+    updateUser(currentUser.id, userData);
     setIsEditing(false);
   };
 

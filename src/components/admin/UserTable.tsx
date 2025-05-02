@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { AppUser, NewUser, UpdateUser } from "@/types";
 import {
   Table,
   TableBody,
@@ -28,34 +29,37 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { formatDistance } from "date-fns";
 import { vi } from "date-fns/locale";
-import { User } from "@/contexts/AuthContext";
 
 const UserTable = () => {
   const { users, addUser, updateUser, deleteUser, currentUser } = useAuth();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  // Fix the type here to accept both "admin" and "user"
-  const [newUser, setNewUser] = useState({ email: "", name: "", role: "user" as "admin" | "user" });
-  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [newUser, setNewUser] = useState<NewUser>({ 
+    email: "", 
+    name: "", 
+    role: "user" 
+  });
+  const [editingUser, setEditingUser] = useState<AppUser | null>(null);
 
   const handleAddUser = () => {
     addUser(newUser);
-    setNewUser({ email: "", name: "", role: "user" as "admin" | "user" });
+    setNewUser({ email: "", name: "", role: "user" });
     setIsAddDialogOpen(false);
   };
 
   const handleUpdateUser = () => {
     if (editingUser) {
-      updateUser(editingUser.id, {
+      const userData: UpdateUser = {
         name: editingUser.name,
         email: editingUser.email,
         role: editingUser.role,
-      });
+      };
+      updateUser(editingUser.id, userData);
       setIsEditDialogOpen(false);
     }
   };
 
-  const startEdit = (user: User) => {
+  const startEdit = (user: AppUser) => {
     setEditingUser({ ...user });
     setIsEditDialogOpen(true);
   };
