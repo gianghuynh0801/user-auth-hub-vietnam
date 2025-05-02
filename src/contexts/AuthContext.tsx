@@ -46,7 +46,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           id: profile.id,
           email: profile.email,
           name: profile.name || "",
-          role: profile.role,
+          role: profile.role === "admin" ? "admin" : "user", // Ensure role is strictly typed
           createdAt: profile.created_at,
         }));
         
@@ -83,7 +83,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 id: profile.id,
                 email: profile.email,
                 name: profile.name || "",
-                role: profile.role,
+                role: profile.role === "admin" ? "admin" : "user", // Ensure proper type casting
                 createdAt: profile.created_at,
               };
               
@@ -124,7 +124,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 id: profile.id,
                 email: profile.email,
                 name: profile.name || "",
-                role: profile.role,
+                role: profile.role === "admin" ? "admin" : "user", // Ensure proper type casting
                 createdAt: profile.created_at,
               };
               
