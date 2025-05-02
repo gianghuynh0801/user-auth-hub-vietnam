@@ -5,6 +5,15 @@ import { Database as OriginalDatabase } from "@/integrations/supabase/types";
 export interface CustomDatabase extends OriginalDatabase {
   public: {
     Tables: OriginalDatabase['public']['Tables'] & {
+      // Giữ lại type cho bảng cũ trong schema public nếu cần
+    };
+    Views: OriginalDatabase['public']['Views'];
+    Functions: OriginalDatabase['public']['Functions'];
+    Enums: OriginalDatabase['public']['Enums'];
+    CompositeTypes: OriginalDatabase['public']['CompositeTypes'];
+  };
+  login_project: {
+    Tables: {
       profiles: {
         Row: {
           id: string;
@@ -29,9 +38,20 @@ export interface CustomDatabase extends OriginalDatabase {
         };
       };
     };
-    Views: OriginalDatabase['public']['Views'];
-    Functions: OriginalDatabase['public']['Functions'];
-    Enums: OriginalDatabase['public']['Enums'];
-    CompositeTypes: OriginalDatabase['public']['CompositeTypes'];
+    Views: {};
+    Functions: {
+      get_user_role: {
+        Args: {
+          user_id: string;
+        };
+        Returns: string;
+      };
+      handle_new_user: {
+        Args: Record<string, never>;
+        Returns: unknown;
+      };
+    };
+    Enums: {};
+    CompositeTypes: {};
   };
 }
