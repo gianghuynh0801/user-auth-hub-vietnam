@@ -34,7 +34,8 @@ const UserTable = () => {
   const { users, addUser, updateUser, deleteUser, currentUser } = useAuth();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [newUser, setNewUser] = useState({ email: "", name: "", role: "user" as const });
+  // Fix the type here to accept both "admin" and "user"
+  const [newUser, setNewUser] = useState({ email: "", name: "", role: "user" as "admin" | "user" });
   const [editingUser, setEditingUser] = useState<User | null>(null);
 
   const handleAddUser = () => {
