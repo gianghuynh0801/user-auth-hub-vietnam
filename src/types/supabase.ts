@@ -28,6 +28,7 @@ export interface CustomDatabase extends OriginalDatabase {
           role?: "admin" | "user";
           created_at?: string;
         };
+        Relationships: []; // Add this missing property
       };
     };
     Views: OriginalDatabase['public']['Views'];
