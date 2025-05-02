@@ -5,7 +5,7 @@ import type { Database } from './types';
 import type { CustomDatabase } from '@/types/supabase';
 import { AppUser, ProfileData } from '@/types';
 
-const SUPABASE_URL = "https://lxhawtndkubaeljbaylp.supabase.co";
+const SUPABASE_URL = "https://api.supabase.mbtool.online";
 const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4aGF3dG5ka3ViYWVsamJheWxwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUzOTkxMTEsImV4cCI6MjA2MDk3NTExMX0.9hsOts4HHM4tvqp5JkESOLuAJLHNYOsME7O4ekOq4oE";
 
 export const supabase = createClient<CustomDatabase>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
