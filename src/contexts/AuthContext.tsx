@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -30,9 +29,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Fetch all users (only for admin)
   const fetchUsers = async () => {
     try {
-      // Using any type to bypass TypeScript type checking for the profiles table
-      const { data, error } = await (supabase
-        .from('profiles') as any)
+      const { data, error } = await supabase
+        .from('profiles')
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -43,11 +41,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Map profiles to AppUser type
       if (data) {
-        const formattedUsers: AppUser[] = data.map((profile: ProfileData) => ({
+        const formattedUsers: AppUser[] = data.map((profile) => ({
           id: profile.id,
           email: profile.email,
-          name: profile.name,
-          role: profile.role as "admin" | "user",
+          name: profile.name || "",
+          role: profile.role,
           createdAt: profile.created_at,
         }));
         
@@ -68,9 +66,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (session?.user) {
           // Fetch the user profile after a delay to avoid recursive auth issues
           setTimeout(async () => {
-            // Using any type to bypass TypeScript type checking for the profiles table
-            const { data: profile, error } = await (supabase
-              .from("profiles") as any)
+            const { data: profile, error } = await supabase
+              .from("profiles")
               .select("*")
               .eq("id", session.user.id)
               .single();
@@ -84,7 +81,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               const user: AppUser = {
                 id: profile.id,
                 email: profile.email,
-                name: profile.name,
+                name: profile.name || "",
                 role: profile.role,
                 createdAt: profile.created_at,
               };
@@ -109,12 +106,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       if (session?.user) {
         // Fetch the user profile
-        (supabase
-          .from("profiles") as any)
+        supabase
+          .from("profiles")
           .select("*")
           .eq("id", session.user.id)
           .single()
-          .then(({ data: profile, error }: {data: ProfileData, error: any}) => {
+          .then(({ data: profile, error }) => {
             if (error) {
               console.error("Error fetching user profile:", error);
               setIsLoading(false);
@@ -125,7 +122,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               const user: AppUser = {
                 id: profile.id,
                 email: profile.email,
-                name: profile.name,
+                name: profile.name || "",
                 role: profile.role,
                 createdAt: profile.created_at,
               };
@@ -281,8 +278,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Update the user's role in the profiles table if needed
       if (userData.role === "admin" && authData.user) {
-        const { error: updateError } = await (supabase
-          .from("profiles") as any)
+        const { error: updateError } = await supabase
+          .from("profiles")
           .update({ role: "admin" })
           .eq("id", authData.user.id);
 
@@ -316,8 +313,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     try {
       // Update the user in the profiles table
-      const { error } = await (supabase
-        .from("profiles") as any)
+      const { error } = await supabase
+        .from("profiles")
         .update({
           name: userData.name,
           email: userData.email,

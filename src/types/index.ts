@@ -19,11 +19,11 @@ export type UpdateUser = Partial<Omit<AppUser, "id">>;
 // We include the original Supabase User type for reference
 export type { User as SupabaseUser } from "@supabase/supabase-js";
 
-// Mock profile type for use with Supabase
+// The profile data as it comes from Supabase
 export interface ProfileData {
   id: string;
   email: string;
-  name: string;
+  name: string | null;
   role: "admin" | "user";
   created_at: string;
 }
