@@ -21,9 +21,8 @@ export async function createFirstAdminIfNeeded(email: string, password: string, 
   try {
     // Check if there are any users first
     const { data, error: countError } = await supabase
-      .from('profiles')
-      .select('*', { count: 'exact', head: true })
-      .in('schema', ['login_project']);
+      .from('login_project.profiles')
+      .select('*', { count: 'exact', head: true });
     
     if (countError) {
       console.error('Error checking for users:', countError);
@@ -50,10 +49,9 @@ export async function createFirstAdminIfNeeded(email: string, password: string, 
       // Update the user's role to admin
       if (authData.user) {
         await supabase
-          .from('profiles')
+          .from('login_project.profiles')
           .update({ role: 'admin' })
-          .eq('id', authData.user.id)
-          .in('schema', ['login_project']);
+          .eq('id', authData.user.id);
       }
       
       console.log('First admin user created successfully!');

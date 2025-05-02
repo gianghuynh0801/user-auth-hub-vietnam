@@ -12,6 +12,7 @@ export interface CustomDatabase extends OriginalDatabase {
     Enums: OriginalDatabase['public']['Enums'];
     CompositeTypes: OriginalDatabase['public']['CompositeTypes'];
   };
+  // Using a custom scheme for our profiles
   login_project: {
     Tables: {
       profiles: {
