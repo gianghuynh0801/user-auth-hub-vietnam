@@ -3,6 +3,7 @@ import { Database as OriginalDatabase } from "@/integrations/supabase/types";
 
 // Extend the original Database type to include our custom tables
 export interface CustomDatabase extends OriginalDatabase {
+  public: OriginalDatabase['public'];
   login_project: {
     Tables: {
       profiles: {

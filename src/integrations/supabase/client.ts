@@ -15,5 +15,8 @@ export const supabase = createClient<CustomDatabase>(SUPABASE_URL, SUPABASE_PUBL
     autoRefreshToken: true,
     persistSession: true,
     storage: localStorage
+  },
+  db: {
+    schema: 'login_project'
   }
 });
